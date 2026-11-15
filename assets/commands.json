@@ -1,0 +1,648 @@
+{
+  "categories": [
+    { "id": "nav",   "icon": "🧭", "name": "Navigate" },
+    { "id": "file",  "icon": "📄", "name": "Files" },
+    { "id": "sys",   "icon": "💻", "name": "System" },
+    { "id": "proc",  "icon": "⚙️", "name": "Processes" },
+    { "id": "net",   "icon": "🌐", "name": "Network" },
+    { "id": "maint", "icon": "🧹", "name": "Maintenance" },
+    { "id": "git",   "icon": "🌿", "name": "Git" },
+    { "id": "tools", "icon": "🧰", "name": "Tools" }
+  ],
+  "commands": [
+    {
+      "cat": "nav", "title": "Where am I?",
+      "mac": "pwd",
+      "win": "Get-Location",
+      "desc": "Prints the full path of the folder you are currently in. Every file command works on this folder unless you give it another path. The current folder is also shown in the path bar at the top — click any part of it to jump there.",
+      "parts": { "pwd": "Print Working Directory — shows the current folder", "Get-Location": "Gets the current folder. Short alias: `pwd`" }
+    },
+    {
+      "cat": "nav", "title": "List files",
+      "mac": "ls -lahG",
+      "win": "Get-ChildItem -Force",
+      "desc": "Lists everything in the current folder with details: type, permissions, size and last-modified date. Hidden files are included. On macOS a line starting with `d` is a folder; on Windows a `d` in the Mode column means folder.",
+      "parts": { "ls": "List directory contents", "-lahG": "Four options combined: `l` long format · `a` include hidden files (names starting with a dot) · `h` human-readable sizes such as 4.2K or 1.3G · `G` colors", "Get-ChildItem": "Lists files and folders. Short aliases: `ls`, `dir`", "-Force": "Include hidden and system files" }
+    },
+    {
+      "cat": "nav", "title": "Go up one level",
+      "mac": "cd ..",
+      "win": "Set-Location ..",
+      "desc": "Moves to the parent folder — the folder that contains the one you are in.",
+      "parts": { "cd": "Change Directory", "..": "Two dots mean “the parent folder”; a single dot (`.`) means “this folder”", "Set-Location": "Changes the current folder. Short alias: `cd`" }
+    },
+    {
+      "cat": "nav", "title": "Go to folder",
+      "mac": "cd \"<path>\"",
+      "win": "Set-Location \"<path>\"",
+      "desc": "Moves into any folder. The path can be relative (e.g. `Documents` = the Documents folder inside the current one) or absolute (e.g. `/Users/you/Desktop` or `C:\\Users\\you\\Desktop`). `~` is a shortcut for your home folder.",
+      "parts": { "cd": "Change Directory", "Set-Location": "Changes the current folder. Short alias: `cd`", "<path>": "The folder to open. It is wrapped in quotes so names with spaces work. Tip: in the command line, press Tab to auto-complete names." }
+    },
+    {
+      "cat": "nav", "title": "Home folder",
+      "mac": "cd ~",
+      "win": "Set-Location ~",
+      "desc": "Returns to your personal home folder: `/Users/<you>` on macOS, `C:\\Users\\<you>` on Windows. Desktop, Documents and Downloads live inside it.",
+      "parts": { "cd": "Change Directory", "Set-Location": "Changes the current folder", "~": "Tilde — shortcut for your home folder" }
+    },
+    {
+      "cat": "nav", "title": "Desktop",
+      "mac": "cd ~/Desktop",
+      "win": "Set-Location ([Environment]::GetFolderPath('Desktop'))",
+      "desc": "Moves to your Desktop folder. On Windows the Desktop is often redirected into OneDrive, so the command asks Windows for its real location.",
+      "parts": { "~/Desktop": "The Desktop folder inside your home folder", "[Environment]::GetFolderPath('Desktop')": "Asks Windows where the Desktop really is (works even when it lives in OneDrive)" }
+    },
+    {
+      "cat": "nav", "title": "Downloads",
+      "mac": "cd ~/Downloads",
+      "win": "Set-Location ~\\Downloads",
+      "desc": "Moves to your Downloads folder, where browsers save downloaded files.",
+      "parts": { "~/Downloads": "The Downloads folder inside your home folder", "~\\Downloads": "The Downloads folder inside your home folder" }
+    },
+    {
+      "cat": "nav", "title": "Folder tree",
+      "mac": "find . -maxdepth 2 -not -path '*/.*' | sort",
+      "win": "Get-ChildItem -Recurse -Depth 1 -Name",
+      "desc": "Shows the structure of the current folder two levels deep: what is here and what is inside each sub-folder. A quick way to understand a project or a folder you haven't seen before.",
+      "parts": { "find": "Walks through folders and lists what it finds", ".": "Start from the current folder", "-maxdepth 2": "Go at most two levels deep", "-not -path '*/.*'": "Skip hidden files and folders (names starting with a dot)", "| sort": "The pipe `|` sends the list to `sort`, which orders it alphabetically", "Get-ChildItem": "Lists files and folders", "-Recurse": "Include sub-folders", "-Depth 1": "…but only one level down", "-Name": "Show relative paths only" }
+    },
+    {
+      "cat": "nav", "title": "Open this folder",
+      "mac": "open .",
+      "win": "Invoke-Item .",
+      "desc": "Opens the current folder in a Finder (macOS) or File Explorer (Windows) window, so you can work with the files using the mouse.",
+      "parts": { "open": "Opens a file, folder or app with the default program", ".": "This folder", "Invoke-Item": "Opens with the default program. Short alias: `ii`" }
+    },
+
+    {
+      "cat": "file", "title": "New folder",
+      "mac": "mkdir -p \"<name>\"",
+      "win": "New-Item -ItemType Directory -Force -Path \"<name>\"",
+      "desc": "Creates a new folder inside the current one. You can create several levels at once, e.g. `project/src/images`. Nothing happens if the folder already exists.",
+      "parts": { "mkdir": "Make Directory", "-p": "Also create missing parent folders, and don't complain if it already exists", "New-Item": "Creates a new item (file or folder)", "-ItemType Directory": "The item is a folder", "-Force": "Don't complain if it already exists", "-Path": "Where to create it", "<name>": "Name of the new folder, e.g. `Photos` or `work/2026`" }
+    },
+    {
+      "cat": "file", "title": "New empty file",
+      "mac": "touch \"<file>\"",
+      "win": "New-Item -ItemType File -Path \"<file>\"",
+      "desc": "Creates an empty file, e.g. `notes.txt`. On macOS, if the file already exists its content is left untouched and only its modified time is updated.",
+      "parts": { "touch": "Creates an empty file or refreshes its timestamp", "New-Item": "Creates a new item", "-ItemType File": "The item is a file", "-Path": "Where to create it", "<file>": "File name including the extension, e.g. `todo.txt`" }
+    },
+    {
+      "cat": "file", "title": "Show file contents",
+      "mac": "cat \"<file>\"",
+      "win": "Get-Content \"<file>\"",
+      "desc": "Prints the whole text of a file. Good for text files such as .txt, .json, .csv, .log or source code; binary files (images, videos, PDFs) come out as gibberish.",
+      "parts": { "cat": "concatenate — prints file contents", "Get-Content": "Reads a file. Short aliases: `cat`, `type`", "<file>": "Name or path of the file" }
+    },
+    {
+      "cat": "file", "title": "First 20 lines",
+      "mac": "head -n 20 \"<file>\"",
+      "win": "Get-Content \"<file>\" -TotalCount 20",
+      "desc": "Shows only the beginning of a file — a quick peek at a large file without printing all of it.",
+      "parts": { "head": "Prints the start of a file", "-n 20": "Number of lines (change it if you like)", "Get-Content": "Reads a file", "-TotalCount 20": "Read only the first 20 lines", "<file>": "Name or path of the file" }
+    },
+    {
+      "cat": "file", "title": "Follow a log file",
+      "mac": "tail -n 50 -f \"<file>\"",
+      "win": "Get-Content \"<file>\" -Tail 50 -Wait",
+      "desc": "Shows the last 50 lines of a file and then keeps watching it: every new line added to the file appears instantly. Perfect for watching log files live. Press ■ Stop to finish.",
+      "parts": { "tail": "Prints the end of a file", "-n 50": "The last 50 lines", "-f": "follow — keep waiting for new lines", "Get-Content": "Reads a file", "-Tail 50": "The last 50 lines", "-Wait": "Keep waiting for new lines", "<file>": "The log file to watch" }
+    },
+    {
+      "cat": "file", "title": "Copy",
+      "mac": "cp -R \"<source>\" \"<dest>\"",
+      "win": "Copy-Item \"<source>\" \"<dest>\" -Recurse",
+      "desc": "Copies a file or folder. If the destination is an existing folder, the copy is placed inside it; otherwise the copy is created with the destination name. ⚠ A file with the same name at the destination is overwritten without asking.",
+      "parts": { "cp": "copy", "-R": "Recursive — copy folders with everything inside", "Copy-Item": "Copies items. Short aliases: `cp`, `copy`", "-Recurse": "Include everything inside folders", "<source>": "The file or folder to copy", "<dest>": "Where to put the copy (a folder or a new name)" }
+    },
+    {
+      "cat": "file", "title": "Move / rename",
+      "mac": "mv \"<source>\" \"<dest>\"",
+      "win": "Move-Item \"<source>\" \"<dest>\"",
+      "desc": "Moves a file or folder. If the destination is just a new name in the same folder, the item is effectively renamed (e.g. `old.txt` → `new.txt`).",
+      "parts": { "mv": "move", "Move-Item": "Moves items. Short aliases: `mv`, `move`", "<source>": "The current file or folder", "<dest>": "New location or new name" }
+    },
+    {
+      "cat": "file", "title": "Move to Trash",
+      "mac": "trash \"<file>\"",
+      "win": "$p = (Resolve-Path -LiteralPath \"<file>\").Path; Add-Type -AssemblyName Microsoft.VisualBasic; if (Test-Path $p -PathType Container) { [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteDirectory($p, 'OnlyErrorDialogs', 'SendToRecycleBin') } else { [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($p, 'OnlyErrorDialogs', 'SendToRecycleBin') }",
+      "desc": "Moves a file or folder to the Trash / Recycle Bin, so you can still restore it later. This is the safe way to delete. (The `trash` command exists on macOS 15 and later. Network drives have no Recycle Bin — Windows deletes files there permanently.)",
+      "parts": { "trash": "Moves items to the macOS Trash", "<file>": "The file or folder to throw away", "Resolve-Path": "Turns the name into a full path", "Microsoft.VisualBasic": "A built-in Windows library that can send files to the Recycle Bin", "SendToRecycleBin": "Recycle instead of deleting permanently" }
+    },
+    {
+      "cat": "file", "title": "Delete file forever", "danger": true,
+      "mac": "rm \"<file>\"",
+      "win": "Remove-Item \"<file>\"",
+      "desc": "Deletes a file permanently. ⚠ It does not go to the Trash and cannot be undone — double-check the name. If in doubt, use “Move to Trash” instead.",
+      "parts": { "rm": "remove", "Remove-Item": "Deletes items. Short aliases: `rm`, `del`", "<file>": "The file to delete" }
+    },
+    {
+      "cat": "file", "title": "Delete folder forever", "danger": true,
+      "mac": "rm -rf \"<folder>\"",
+      "win": "Remove-Item \"<folder>\" -Recurse -Force",
+      "desc": "Deletes a folder together with everything inside it, without asking. ⚠ The most dangerous command in this list: a wrong path can wipe a lot of data permanently.",
+      "parts": { "rm": "remove", "-rf": "`r` recursive (everything inside) · `f` force (no questions, no errors)", "Remove-Item": "Deletes items", "-Recurse": "Everything inside the folder", "-Force": "Also hidden and read-only files", "<folder>": "The folder to delete" }
+    },
+    {
+      "cat": "file", "title": "Find files by name",
+      "mac": "find . -iname \"*<name>*\" 2>/dev/null",
+      "win": "Get-ChildItem -Recurse -Filter \"*<name>*\" -Name -ErrorAction SilentlyContinue",
+      "desc": "Searches the current folder and all its sub-folders for files and folders whose name contains your text (upper/lower case doesn't matter). Can take a while in very large folders.",
+      "parts": { "find": "Searches for files", ".": "Start in the current folder", "-iname": "Match the name, ignoring upper/lower case", "<name>": "Part of the name, e.g. `report` or `.pdf`. The `*` on each side means “anything before and after”", "2>/dev/null": "Hide error messages such as “Permission denied”", "Get-ChildItem": "Lists files", "-Recurse": "Include all sub-folders", "-Filter": "Only names matching the pattern", "-Name": "Show relative paths only", "-ErrorAction SilentlyContinue": "Hide errors" }
+    },
+    {
+      "cat": "file", "title": "Search text in files",
+      "mac": "grep -rniI --color=always \"<text>\" .",
+      "win": "Get-ChildItem -Recurse -File | Select-String -SimpleMatch \"<text>\"",
+      "desc": "Looks inside every file in the current folder (and sub-folders) for a word or phrase, and shows the file name, line number and the matching line. Great for finding something in code, notes or config files.",
+      "parts": { "grep": "Searches text inside files", "-rniI": "`r` all sub-folders · `n` show line numbers · `i` ignore upper/lower case · `I` skip binary files", "--color=always": "Highlight the matches", "<text>": "The text to look for", ".": "Search in the current folder", "Get-ChildItem -Recurse -File": "Every file in every sub-folder", "| Select-String": "Pipes the files to Select-String, which searches their content (PowerShell's grep)", "-SimpleMatch": "Search for the text literally, not as a regex pattern" }
+    },
+    {
+      "cat": "file", "title": "Open a file",
+      "mac": "open \"<file>\"",
+      "win": "Invoke-Item \"<file>\"",
+      "desc": "Opens a file with its default app — exactly like double-clicking it: images in the image viewer, PDFs in the PDF viewer, web pages in the browser…",
+      "parts": { "open": "Opens with the default app", "Invoke-Item": "Opens with the default app. Short alias: `ii`", "<file>": "The file to open" }
+    },
+    {
+      "cat": "file", "title": "Zip",
+      "mac": "zip -r \"<name>.zip\" \"<source>\"",
+      "win": "Compress-Archive -Path \"<source>\" -DestinationPath \"<name>.zip\"",
+      "desc": "Compresses a file or folder into a .zip archive — handy for sending, uploading or archiving.",
+      "parts": { "zip": "Creates a zip archive", "-r": "Include everything inside folders", "<name>": "Name of the zip file to create (without .zip)", "<source>": "The file or folder to compress", "Compress-Archive": "Creates a zip archive", "-Path": "What to compress", "-DestinationPath": "The zip file to create" }
+    },
+    {
+      "cat": "file", "title": "Unzip",
+      "mac": "unzip \"<file>\" -d \"<folder>\"",
+      "win": "Expand-Archive -Path \"<file>\" -DestinationPath \"<folder>\"",
+      "desc": "Extracts a .zip archive into a folder (created if it doesn't exist). On macOS, if a file already exists you are asked whether to replace it — type the answer in the command line (`y` yes, `n` no, `A` all). On Windows it stops instead; add `-Force` to overwrite.",
+      "parts": { "unzip": "Extracts a zip archive", "-d": "Destination folder", "Expand-Archive": "Extracts a zip archive", "-Path": "The zip file", "-DestinationPath": "Destination folder", "<file>": "The .zip file", "<folder>": "Folder to extract into" }
+    },
+    {
+      "cat": "file", "title": "File info",
+      "mac": "stat -x \"<file>\"",
+      "win": "Get-Item \"<file>\" | Format-List Name, Length, CreationTime, LastWriteTime, LastAccessTime, Attributes",
+      "desc": "Shows the details of a file or folder: size in bytes, creation time, last modification, last access and permissions / attributes.",
+      "parts": { "stat": "Shows a file's status and metadata", "-x": "Verbose, easy-to-read layout", "Get-Item": "Gets the file itself", "| Format-List": "Shows the chosen properties as a list", "Length": "Size in bytes", "<file>": "The file to inspect" }
+    },
+
+    {
+      "cat": "sys", "title": "OS version",
+      "mac": "sw_vers",
+      "win": "Get-CimInstance Win32_OperatingSystem | Select-Object Caption, Version, BuildNumber, OSArchitecture",
+      "desc": "Shows the exact name and version of the operating system — often needed when installing software or asking for help.",
+      "parts": { "sw_vers": "software version — macOS version and build number", "Get-CimInstance": "Reads system information from WMI", "Win32_OperatingSystem": "The operating-system section", "| Select-Object": "Keep only the interesting columns" }
+    },
+    {
+      "cat": "sys", "title": "Hardware overview",
+      "mac": "system_profiler SPHardwareDataType 2>/dev/null",
+      "win": "systeminfo",
+      "desc": "Full machine details: model, chip, memory and serial number (macOS), or Windows edition, install date, installed updates and network cards (Windows). Takes a few seconds.",
+      "parts": { "system_profiler": "The macOS system report tool", "SPHardwareDataType": "Only the hardware section", "2>/dev/null": "Hide harmless warning messages", "systeminfo": "The full Windows system report" }
+    },
+    {
+      "cat": "sys", "title": "Processor (CPU)",
+      "mac": "sysctl machdep.cpu.brand_string hw.ncpu",
+      "win": "Get-CimInstance Win32_Processor | Select-Object Name, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed",
+      "desc": "Shows the processor model and how many cores it has.",
+      "parts": { "sysctl": "Reads kernel/system values", "machdep.cpu.brand_string": "Processor name and model", "hw.ncpu": "Number of cores", "Win32_Processor": "The processor section", "NumberOfCores": "Physical cores", "NumberOfLogicalProcessors": "Threads (logical cores)", "MaxClockSpeed": "Maximum speed in MHz" }
+    },
+    {
+      "cat": "sys", "title": "Memory (RAM)",
+      "mac": "top -l 1 -s 0 | grep PhysMem",
+      "win": "Get-CimInstance Win32_OperatingSystem | Select-Object @{n='TotalGB';e={[math]::Round($_.TotalVisibleMemorySize/1MB,1)}}, @{n='FreeGB';e={[math]::Round($_.FreePhysicalMemory/1MB,1)}}",
+      "desc": "Shows how much RAM is used and free. On macOS `unused` is free memory and `compressor` is memory macOS compressed to fit more in (normal). Little free RAM on a Mac is not necessarily a problem: macOS deliberately uses spare RAM as cache.",
+      "parts": { "top": "The process / resource monitor", "-l 1": "Take one sample and exit (not live mode)", "-s 0": "No delay", "| grep PhysMem": "Keep only the physical-memory line", "TotalVisibleMemorySize": "Total RAM in KB — dividing by `1MB` turns it into GB", "FreePhysicalMemory": "Free RAM", "[math]::Round": "Rounds the number" }
+    },
+    {
+      "cat": "sys", "title": "Uptime",
+      "mac": "uptime",
+      "win": "(Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime",
+      "desc": "Shows how long the computer has been running since it was last started. On macOS, `load averages` are the average CPU load over the last 1, 5 and 15 minutes.",
+      "parts": { "uptime": "Time since the last boot", "(Get-Date)": "The time now", "LastBootUpTime": "When Windows last started — the difference between the two is the uptime" }
+    },
+    {
+      "cat": "sys", "title": "Battery level",
+      "mac": "pmset -g batt",
+      "win": "Get-CimInstance Win32_Battery | Select-Object EstimatedChargeRemaining, EstimatedRunTime, BatteryStatus",
+      "desc": "Battery percentage and whether it is charging. Desktops without a battery show nothing. On Windows, `BatteryStatus` 2 means plugged in and 1 means running on battery.",
+      "parts": { "pmset": "macOS power-management tool", "-g batt": "Show battery status", "Win32_Battery": "The battery section", "EstimatedChargeRemaining": "Charge in percent", "EstimatedRunTime": "Estimated minutes left" }
+    },
+    {
+      "cat": "sys", "title": "Battery health",
+      "mac": "system_profiler SPPowerDataType 2>/dev/null | grep -E \"Cycle Count|Condition|Maximum Capacity\"",
+      "win": "powercfg /batteryreport; Invoke-Item battery-report.html",
+      "desc": "macOS: number of charge cycles, battery condition and maximum capacity compared to when it was new. Windows: creates a detailed HTML report (`battery-report.html`) in the current folder and opens it — compare Design Capacity with Full Charge Capacity.",
+      "parts": { "SPPowerDataType": "The power & battery section", "2>/dev/null": "Hide harmless warning messages", "grep -E": "Keep only the lines with these words", "powercfg /batteryreport": "Creates the battery health report", "Invoke-Item": "Opens the report" }
+    },
+    {
+      "cat": "sys", "title": "User & computer name",
+      "all": "whoami; hostname",
+      "desc": "Shows the account you are logged in with and this computer's network name.",
+      "parts": { "whoami": "“Who am I?” — the current user", ";": "Runs the first command, then the second", "hostname": "The computer's name on the network" }
+    },
+    {
+      "cat": "sys", "title": "PATH folders",
+      "mac": "echo $PATH | tr ':' '\\n'",
+      "win": "$env:Path -split ';'",
+      "desc": "PATH is the list of folders the system searches for programs. If a command says “command not found” or “is not recognized”, the program is either not installed or its folder isn't in PATH.",
+      "parts": { "echo $PATH": "Prints the PATH variable", "| tr ':' '\\n'": "Replaces the `:` separators with new lines — one folder per line", "$env:Path": "The Path environment variable", "-split ';'": "Splits it at each `;` — one folder per line" }
+    },
+    {
+      "cat": "sys", "title": "Lock screen",
+      "mac": "pmset displaysleepnow",
+      "win": "rundll32.exe user32.dll,LockWorkStation",
+      "desc": "Turns the display off and locks the computer, so a password is needed to continue. On macOS it locks only if “Require password after screen saver begins or display is turned off” is enabled in Lock Screen settings.",
+      "parts": { "pmset displaysleepnow": "Puts the display to sleep immediately", "rundll32.exe user32.dll,LockWorkStation": "Calls the Windows lock function (same as Win+L)" }
+    },
+    {
+      "cat": "sys", "title": "Shut down", "danger": true,
+      "mac": "osascript -e 'tell application \"System Events\" to shut down'",
+      "win": "shutdown /s /t 60",
+      "desc": "Shuts the computer down. macOS: same as Apple menu → Shut Down, so apps can ask to save your work (the first time, macOS may ask permission to control System Events). Windows: shuts down after 60 seconds — use “Cancel shutdown” to abort.",
+      "parts": { "osascript": "Runs AppleScript", "-e": "The script to run", "tell application \"System Events\" to shut down": "Asks macOS to shut down normally", "shutdown": "Windows shutdown / restart tool", "/s": "Shut down", "/t 60": "In 60 seconds" }
+    },
+    {
+      "cat": "sys", "title": "Restart", "danger": true,
+      "mac": "osascript -e 'tell application \"System Events\" to restart'",
+      "win": "shutdown /r /t 60",
+      "desc": "Restarts the computer. macOS: same as Apple menu → Restart. Windows: restarts after 60 seconds — use “Cancel shutdown” to abort.",
+      "parts": { "osascript": "Runs AppleScript", "tell application \"System Events\" to restart": "Asks macOS to restart normally", "shutdown": "Windows shutdown / restart tool", "/r": "Restart", "/t 60": "In 60 seconds" }
+    },
+    {
+      "cat": "sys", "title": "Cancel shutdown",
+      "win": "shutdown /a",
+      "desc": "Cancels a shutdown or restart that is still counting down (for example one started with the Shut down or Restart keys).",
+      "parts": { "shutdown": "Windows shutdown / restart tool", "/a": "Abort the pending shutdown" }
+    },
+
+    {
+      "cat": "proc", "title": "Top CPU users",
+      "mac": "ps -Ao pid,pcpu,pmem,ucomm -r | head -n 16",
+      "win": "Get-Process | Sort-Object CPU -Descending | Select-Object -First 15 Id, ProcessName, CPU",
+      "desc": "The 15 programs using the most processor. The PID (Id on Windows) column is the program's number — you need it to close a program. On macOS `%CPU` is current usage (100 = one full core); on Windows the CPU column is the total processor-seconds used since the program started.",
+      "parts": { "ps": "process status — lists running programs", "-Ao": "`A` all programs (including system ones) · `o` choose the columns", "pid,pcpu,pmem,ucomm": "Columns: number, % CPU, % memory, name", "-r": "Sort by CPU usage", "| head -n 16": "Only the first 16 lines (header + 15 programs)", "Get-Process": "Lists running programs. Short alias: `ps`", "Sort-Object CPU -Descending": "Sort by CPU, highest first", "Select-Object -First 15": "Keep the first 15 and these columns" }
+    },
+    {
+      "cat": "proc", "title": "Top memory users",
+      "mac": "ps -Ao pid,pmem,rss,ucomm -m | head -n 16",
+      "win": "Get-Process | Sort-Object WorkingSet64 -Descending | Select-Object -First 15 Id, ProcessName, @{n='MemMB';e={[math]::Round($_.WorkingSet64/1MB)}}",
+      "desc": "The 15 programs using the most memory (RAM). On macOS `RSS` is the real memory in kilobytes; on Windows `MemMB` is megabytes.",
+      "parts": { "ps": "Lists running programs", "-Ao": "All programs, chosen columns", "pid,pmem,rss,ucomm": "Columns: number, % memory, memory in KB, name", "-m": "Sort by memory usage", "| head -n 16": "Header + the top 15", "Get-Process": "Lists running programs", "Sort-Object WorkingSet64 -Descending": "Sort by memory, highest first", "@{n='MemMB';e={[math]::Round($_.WorkingSet64/1MB)}}": "A calculated column: memory in MB" }
+    },
+    {
+      "cat": "proc", "title": "Find a running program",
+      "mac": "pgrep -il \"<name>\"",
+      "win": "Get-Process -Name \"*<name>*\"",
+      "desc": "Lists running programs whose name contains your text, together with their number (PID) — e.g. `chrome` or `python`.",
+      "parts": { "pgrep": "Finds programs by name", "-il": "`i` ignore upper/lower case · `l` show the name next to the number", "Get-Process": "Lists running programs", "-Name": "Filter by name", "<name>": "Part of the program's name" }
+    },
+    {
+      "cat": "proc", "title": "Close program by PID", "danger": true,
+      "mac": "kill <pid>",
+      "win": "Stop-Process -Id <pid>",
+      "desc": "Asks the program with this number (PID) to quit. Get the PID from “Find a running program” or the “Top …” keys. If a frozen program won't close, force it with `kill -9 <pid>` on macOS or `Stop-Process -Id <pid> -Force` on Windows — unsaved work is lost.",
+      "parts": { "kill": "Sends a quit signal to a program", "Stop-Process": "Stops a program. Short alias: `kill`", "-Id": "By number", "<pid>": "The program's number (PID)" }
+    },
+    {
+      "cat": "proc", "title": "Close program by name", "danger": true,
+      "mac": "killall \"<name>\"",
+      "win": "Stop-Process -Name \"<name>\"",
+      "desc": "Closes every window / instance of a program by its exact name — e.g. `Safari` or `Google Chrome` on macOS, `chrome` or `notepad` on Windows (without .exe). ⚠ Unsaved work in that program is lost.",
+      "parts": { "killall": "Closes every program with this exact name", "Stop-Process": "Stops a program", "-Name": "By name", "<name>": "The exact program name" }
+    },
+    {
+      "cat": "proc", "title": "Launch an app",
+      "mac": "open -a \"<app>\"",
+      "win": "Start-Process \"<app>\"",
+      "desc": "Starts an application by its name — e.g. `Safari`, `Calculator`, `Notes` or `Visual Studio Code` on macOS; `notepad`, `calc`, `mspaint` or `chrome` on Windows.",
+      "parts": { "open": "Opens things", "-a": "application — open the app with this name", "Start-Process": "Starts a program. Short alias: `start`", "<app>": "The application's name" }
+    },
+    {
+      "cat": "proc", "title": "Open task manager",
+      "mac": "open -a \"Activity Monitor\"",
+      "win": "Start-Process taskmgr",
+      "desc": "Opens the graphical system monitor, where you can see resource usage and quit programs with the mouse.",
+      "parts": { "open -a": "Opens an application", "Start-Process": "Starts a program", "taskmgr": "Task Manager" }
+    },
+    {
+      "cat": "proc", "title": "Live resource monitor", "term": "mac",
+      "mac": "top -o cpu",
+      "win": "Start-Process resmon",
+      "desc": "Live CPU, memory, disk and network usage. macOS: opens `top` in a separate Terminal window (press `q` to quit). Windows: opens Resource Monitor.",
+      "parts": { "top": "Live view of running programs", "-o cpu": "Sort by CPU usage", "Start-Process": "Starts a program", "resmon": "Windows Resource Monitor" }
+    },
+
+    {
+      "cat": "net", "title": "Local IP address",
+      "mac": "ifconfig | grep \"inet \"",
+      "win": "Get-NetIPAddress -AddressFamily IPv4 | Select-Object InterfaceAlias, IPAddress",
+      "desc": "Shows this computer's address on your local network (usually like `192.168.x.x`) — the address other devices connected to the same router use to reach you. `127.0.0.1` is the machine talking to itself; ignore it.",
+      "parts": { "ifconfig": "Shows the network interfaces", "| grep \"inet \"": "Keep only the lines with an IPv4 address", "Get-NetIPAddress": "Lists IP addresses", "-AddressFamily IPv4": "IPv4 only", "InterfaceAlias": "Name of the network adapter (Wi-Fi, Ethernet…)" }
+    },
+    {
+      "cat": "net", "title": "Public IP address",
+      "mac": "curl -s https://api.ipify.org",
+      "win": "curl.exe -s https://api.ipify.org",
+      "desc": "Asks the ipify service for your public internet address — the one websites see. With a VPN or proxy on, you'll see its server's address instead.",
+      "parts": { "curl": "Makes internet requests", "curl.exe": "The real curl that ships with Windows 10 and 11 (`.exe` is needed because in Windows PowerShell plain `curl` is a different command)", "-s": "silent — no progress bar", "https://api.ipify.org": "A service that replies with your IP address" }
+    },
+    {
+      "cat": "net", "title": "Ping (test connection)",
+      "mac": "ping -c 4 <host=8.8.8.8>",
+      "win": "ping -n 4 <host=8.8.8.8>",
+      "desc": "Sends 4 small packets to a host and measures the round-trip time in milliseconds. Replies mean the connection works; a lower `time` means a faster response. “Request timeout” means no reply (no connection, or the host blocks ping).",
+      "parts": { "ping": "Tests whether a host is reachable", "-c 4": "count — send 4 packets", "-n 4": "Send 4 packets", "<host>": "Destination: an IP or domain, e.g. `8.8.8.8` (Google DNS) or `google.com`" }
+    },
+    {
+      "cat": "net", "title": "Trace route",
+      "mac": "traceroute -n -m 20 <host=8.8.8.8>",
+      "win": "tracert -d -h 20 <host=8.8.8.8>",
+      "desc": "Lists every router (hop) between you and the destination — useful to see where a slowdown or outage happens (your router, your ISP or further away). `*` means that hop didn't answer. Can take up to a minute.",
+      "parts": { "traceroute": "Traces the route to a host", "tracert": "Traces the route to a host (Windows)", "-n": "Don't look up names — faster", "-d": "Don't look up names — faster", "-m 20": "At most 20 hops", "-h 20": "At most 20 hops", "<host>": "Destination IP or domain" }
+    },
+    {
+      "cat": "net", "title": "DNS lookup",
+      "all": "nslookup <domain=google.com>",
+      "desc": "Asks your DNS server which IP address a domain name points to. `Server` is the DNS server that answered; the addresses listed under the name belong to the site. Useful when a website won't open.",
+      "parts": { "nslookup": "name-server lookup — queries DNS", "<domain>": "A domain name, e.g. `google.com`" }
+    },
+    {
+      "cat": "net", "title": "Flush DNS cache",
+      "mac": "sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder",
+      "win": "ipconfig /flushdns",
+      "desc": "Clears the system's DNS cache. Helps when a site changed address, or when some sites stop loading after you switch DNS or VPN. On macOS you'll be asked for your password.",
+      "parts": { "sudo": "Run with administrator rights (asks for your Mac password)", "dscacheutil -flushcache": "Empties the DNS cache", ";": "Then run the next command", "killall -HUP mDNSResponder": "Restarts the macOS DNS service", "ipconfig": "Windows IP configuration tool", "/flushdns": "Empty the DNS cache" }
+    },
+    {
+      "cat": "net", "title": "Listening ports",
+      "mac": "lsof -nP -iTCP -sTCP:LISTEN",
+      "win": "Get-NetTCPConnection -State Listen | Sort-Object LocalPort | Select-Object LocalAddress, LocalPort, OwningProcess, @{n='Process';e={(Get-Process -Id $_.OwningProcess).ProcessName}}",
+      "desc": "Lists programs waiting for incoming connections on a port (local web servers, databases, file-sharing apps…) with their name and PID. On macOS, without sudo you only see your own programs.",
+      "parts": { "lsof": "list open files — also lists network connections", "-nP": "Show numbers instead of names (faster)", "-iTCP -sTCP:LISTEN": "Only TCP ports that are listening", "Get-NetTCPConnection": "Lists TCP connections", "-State Listen": "Only listening ports", "Sort-Object LocalPort": "Order by port number", "OwningProcess": "PID of the program that owns the port", "@{n='Process';e={(Get-Process -Id $_.OwningProcess).ProcessName}}": "A calculated column: the program's name" }
+    },
+    {
+      "cat": "net", "title": "Who uses this port?",
+      "mac": "lsof -nP -i :<port>",
+      "win": "Get-NetTCPConnection -LocalPort <port> | Select-Object LocalAddress, LocalPort, State, OwningProcess, @{n='Process';e={(Get-Process -Id $_.OwningProcess).ProcessName}}",
+      "desc": "When something fails with “port already in use”, this shows which program (and PID) holds that port, so you can close it with “Close program by PID”.",
+      "parts": { "lsof": "Lists open files and connections", "-nP": "Numeric output", "-i :": "Only connections on this port", "Get-NetTCPConnection": "Lists TCP connections", "-LocalPort": "Filter by port number", "<port>": "Port number, e.g. `3000` or `8080`" }
+    },
+    {
+      "cat": "net", "title": "Is a server port open?",
+      "mac": "nc -vz -G 3 <host=google.com> <port=443>",
+      "win": "Test-NetConnection <host=google.com> -Port <port=443>",
+      "desc": "Checks whether a TCP connection to a specific port on a server succeeds — e.g. port 443 (HTTPS) on google.com. macOS prints “succeeded” when it is open; Windows shows `TcpTestSucceeded : True`.",
+      "parts": { "nc": "netcat — network connection tool", "-vz": "`v` report the result · `z` only test the connection, send no data", "-G 3": "Give up after 3 seconds", "Test-NetConnection": "Tests a network connection", "-Port": "The port to test", "<host>": "Server address", "<port>": "Port number: 80 = HTTP, 443 = HTTPS, 22 = SSH" }
+    },
+    {
+      "cat": "net", "title": "Check a website",
+      "mac": "curl -sIL --max-time 10 <url=https://google.com>",
+      "win": "curl.exe -sIL --max-time 10 <url=https://google.com>",
+      "desc": "Fetches only the response headers of a website. The key part is the status code on the first line: `200` OK, `301`/`302` redirect, `403` forbidden, `404` not found, `5xx` server error.",
+      "parts": { "curl": "Makes internet requests", "curl.exe": "curl on Windows", "-sIL": "`s` silent · `I` headers only · `L` follow redirects", "--max-time 10": "Wait at most 10 seconds", "<url>": "The website address" }
+    },
+    {
+      "cat": "net", "title": "Download a file",
+      "mac": "curl -L -O \"<url>\"",
+      "win": "curl.exe -L -O \"<url>\"",
+      "desc": "Downloads a file from the internet into the current folder, keeping its original name. A progress bar is shown while it downloads.",
+      "parts": { "curl": "Makes internet requests", "curl.exe": "curl on Windows", "-L": "Follow redirects to the real file", "-O": "Save with the file's original name", "<url>": "Direct link to the file" }
+    },
+    {
+      "cat": "net", "title": "Wi-Fi details",
+      "mac": "system_profiler SPAirPortDataType 2>/dev/null",
+      "win": "netsh wlan show interfaces",
+      "desc": "Details of the Wi-Fi connection: channel, signal strength, link speed and standard (e.g. Wi-Fi 6). Recent macOS versions may hide the network name for privacy (shown as “redacted”).",
+      "parts": { "system_profiler": "The macOS system report tool", "SPAirPortDataType": "The Wi-Fi section", "2>/dev/null": "Hide harmless warning messages", "netsh wlan show interfaces": "Shows the current Wi-Fi connection" }
+    },
+    {
+      "cat": "net", "title": "Saved Wi-Fi networks",
+      "mac": "networksetup -listpreferredwirelessnetworks en0",
+      "win": "netsh wlan show profiles",
+      "desc": "Lists the Wi-Fi networks this computer has joined before and remembers. (On macOS, `en0` is normally the Wi-Fi interface.)",
+      "parts": { "networksetup": "macOS network settings tool", "-listpreferredwirelessnetworks": "List remembered Wi-Fi networks", "en0": "The Wi-Fi interface", "netsh wlan show profiles": "Lists saved Wi-Fi profiles" }
+    },
+    {
+      "cat": "net", "title": "Saved Wi-Fi password", "admin": "win",
+      "mac": "security find-generic-password -wa \"<wifi>\"",
+      "win": "netsh wlan show profile name=\"<wifi>\" key=clear",
+      "desc": "Reveals the password of a saved Wi-Fi network — copy the exact network name from “Saved Wi-Fi networks”. macOS asks for an administrator name and password before reading it from the Keychain. Windows: the password is on the `Key Content` line (needs administrator rights, so it opens in a separate window).",
+      "parts": { "security": "macOS Keychain tool", "find-generic-password": "Looks up a saved password", "-wa": "`w` print only the password · `a` the account (here: the network name)", "netsh wlan show profile": "Shows a saved Wi-Fi profile", "name=": "The network name", "key=clear": "Show the password in plain text", "<wifi>": "Exact name of the Wi-Fi network" }
+    },
+
+    {
+      "cat": "maint", "title": "Disk space",
+      "mac": "df -h",
+      "win": "Get-PSDrive -PSProvider FileSystem",
+      "desc": "Shows total, used and free space on each drive. On macOS the `Avail` column is the free space and your main disk is the `/` or `/System/Volumes/Data` row. On Windows, Used and Free are in GB.",
+      "parts": { "df": "disk free", "-h": "Human-readable sizes (G, M)", "Get-PSDrive": "Lists drives", "-PSProvider FileSystem": "Only disk drives (not registry etc.)" }
+    },
+    {
+      "cat": "maint", "title": "Folder sizes",
+      "mac": "du -sh * | sort -h",
+      "win": "Get-ChildItem -Force | Select-Object Name, @{n='MB';e={[math]::Round((Get-ChildItem -LiteralPath $_.FullName -Recurse -File -Force -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum/1MB,1)}} | Sort-Object MB",
+      "desc": "Calculates the size of every file and sub-folder in the current folder and sorts them from smallest to largest — the biggest are at the bottom. The best way to find out what is filling your disk. May take a while on big folders.",
+      "parts": { "du": "disk usage", "-sh": "`s` one total per item · `h` human-readable sizes", "*": "Everything in the current folder (except hidden items)", "| sort -h": "Sort by size", "Get-ChildItem -Force": "Everything in the current folder", "Measure-Object Length -Sum": "Adds up the size of all files inside each item", "Sort-Object MB": "Sort by size in MB" }
+    },
+    {
+      "cat": "maint", "title": "Find big files",
+      "mac": "find . -type f -size +100M -exec du -h {} + 2>/dev/null | sort -h",
+      "win": "Get-ChildItem -Recurse -File -ErrorAction SilentlyContinue | Where-Object Length -gt 100MB | Sort-Object Length | Select-Object @{n='MB';e={[math]::Round($_.Length/1MB)}}, FullName",
+      "desc": "Finds every file larger than 100 MB in the current folder and its sub-folders, sorted by size. To scan all your personal files, go to your Home folder first.",
+      "parts": { "find": "Searches for files", ".": "Start in the current folder", "-type f": "Files only (not folders)", "-size +100M": "Larger than 100 MB", "-exec du -h {} +": "Measure each file found, in readable units", "2>/dev/null": "Hide error messages", "| sort -h": "Sort by size", "Where-Object Length -gt 100MB": "Keep only files bigger than 100 MB", "Sort-Object Length": "Sort by size", "FullName": "The file's full path" }
+    },
+    {
+      "cat": "maint", "title": "Disks & partitions",
+      "mac": "diskutil list",
+      "win": "Get-Volume",
+      "desc": "Lists all connected disks, USB drives and partitions with their size and file system (APFS, NTFS, exFAT…).",
+      "parts": { "diskutil list": "Lists disks and partitions", "Get-Volume": "Lists drives with free space and health" }
+    },
+    {
+      "cat": "maint", "title": "Disk health",
+      "mac": "diskutil info / | grep -E \"Volume Name|File System Personality|SMART Status|Container Free Space\"",
+      "win": "Get-PhysicalDisk | Select-Object FriendlyName, MediaType, HealthStatus, OperationalStatus, @{n='SizeGB';e={[math]::Round($_.Size/1GB)}}",
+      "desc": "A quick health check of your drives. macOS: `SMART Status` should be “Verified”. Windows: `HealthStatus` should be “Healthy”. Anything else: back up your data and have the drive checked.",
+      "parts": { "diskutil info /": "Details of the startup disk", "grep -E": "Keep only the interesting lines", "Get-PhysicalDisk": "Lists the physical drives", "HealthStatus": "The drive's health" }
+    },
+    {
+      "cat": "maint", "title": "Empty the Trash", "danger": true,
+      "mac": "osascript -e 'tell application \"Finder\" to empty trash'",
+      "win": "Clear-RecycleBin -Force",
+      "desc": "Permanently deletes everything in the Trash / Recycle Bin to free disk space. ⚠ Files can't be restored afterwards. The first time on macOS you may be asked to allow controlling Finder.",
+      "parts": { "osascript": "Runs AppleScript", "tell application \"Finder\" to empty trash": "Asks Finder to empty the Trash", "Clear-RecycleBin": "Empties the Recycle Bin", "-Force": "Don't ask for confirmation" }
+    },
+    {
+      "cat": "maint", "title": "Clean temporary files", "danger": true,
+      "win": "Remove-Item \"$env:TEMP\\*\" -Recurse -Force -ErrorAction SilentlyContinue",
+      "desc": "Deletes temporary files that programs left in your Temp folder. Files currently in use are skipped automatically. Usually safe, and can free several gigabytes.",
+      "parts": { "Remove-Item": "Deletes items", "$env:TEMP": "Your temporary-files folder", "-Recurse": "Including sub-folders", "-Force": "Including hidden files", "-ErrorAction SilentlyContinue": "Silently skip files that are in use" }
+    },
+    {
+      "cat": "maint", "title": "Repair system files", "admin": "win",
+      "win": "sfc /scannow",
+      "desc": "Scans all protected Windows system files and replaces damaged ones with a correct copy. Takes 10–30 minutes. Needs administrator rights, so it runs in a separate window.",
+      "parts": { "sfc": "System File Checker", "/scannow": "Scan and repair now" }
+    },
+    {
+      "cat": "maint", "title": "Check for updates",
+      "mac": "softwareupdate -l",
+      "win": "winget upgrade --accept-source-agreements",
+      "desc": "macOS: lists available macOS and Apple software updates (nothing is installed). Windows: lists apps that have a newer version, using winget — the official Windows package manager.",
+      "parts": { "softwareupdate": "macOS update tool", "-l": "list only", "winget upgrade": "Lists apps that can be upgraded", "--accept-source-agreements": "Accept the source terms automatically, so it doesn't stop to ask" }
+    },
+    {
+      "cat": "maint", "title": "Update all apps",
+      "mac": "brew update && brew upgrade",
+      "win": "winget upgrade --all --accept-source-agreements --accept-package-agreements",
+      "desc": "macOS: updates everything you installed with Homebrew (without Homebrew you'll get “command not found”). Windows: upgrades every app winget can update; some installers may show an administrator prompt. Can take several minutes.",
+      "parts": { "brew update": "Refreshes Homebrew's list of packages", "&&": "Run the second command only if the first succeeded", "brew upgrade": "Upgrades all outdated packages", "winget upgrade": "Upgrades apps", "--all": "Every app that has an update", "--accept-source-agreements": "Accept the source terms automatically", "--accept-package-agreements": "Accept each app's license automatically" }
+    },
+    {
+      "cat": "maint", "title": "Installed apps",
+      "mac": "ls /Applications",
+      "win": "winget list --accept-source-agreements",
+      "desc": "Lists the applications installed on this computer. On Windows you also see each app's version and where it came from.",
+      "parts": { "ls": "List directory contents", "/Applications": "The macOS applications folder", "winget list": "Lists installed apps" }
+    },
+
+    {
+      "cat": "git", "title": "Status",
+      "all": "git status",
+      "desc": "The most-used git command: shows the current branch, which files changed, which are staged for the next commit and which are untracked (new to git).",
+      "parts": { "git": "The git version-control tool", "status": "Show the working-folder status" }
+    },
+    {
+      "cat": "git", "title": "History",
+      "all": "git log --oneline --graph --decorate --color -n 20",
+      "desc": "The last 20 commits, one line each, drawn as a graph: short id, message and branch names.",
+      "parts": { "git log": "Shows the commit history", "--oneline": "One line per commit", "--graph": "Draw branches and merges", "--decorate": "Show branch and tag names", "--color": "Colored output", "-n 20": "Only the latest 20" }
+    },
+    {
+      "cat": "git", "title": "Changes (diff)",
+      "all": "git diff --color",
+      "desc": "Line-by-line changes in files that are not staged yet. Green lines starting with `+` were added; red lines starting with `-` were removed. For staged changes use `git diff --staged`.",
+      "parts": { "git diff": "Compares versions", "--color": "Colored output" }
+    },
+    {
+      "cat": "git", "title": "Stage all changes",
+      "all": "git add -A",
+      "desc": "Stages every change — new, modified and deleted files — for the next commit.",
+      "parts": { "git add": "Adds changes to the staging area", "-A": "All changes" }
+    },
+    {
+      "cat": "git", "title": "Commit",
+      "all": "git commit -m \"<message>\"",
+      "desc": "Records the staged changes as a new version in the history, with a short message describing what changed, e.g. “Fix login error”.",
+      "parts": { "git commit": "Records a new version", "-m": "message", "<message>": "Short description of the change" }
+    },
+    {
+      "cat": "git", "title": "Pull",
+      "all": "git pull",
+      "desc": "Downloads the latest changes from the remote repository (e.g. GitHub) and merges them into your current branch.",
+      "parts": { "git pull": "Fetch and merge from the remote" }
+    },
+    {
+      "cat": "git", "title": "Push",
+      "all": "git push",
+      "desc": "Uploads your local commits to the remote repository (e.g. GitHub). If it asks you to sign in and you never have before, run it once in a separate terminal (↗ button).",
+      "parts": { "git push": "Send commits to the remote" }
+    },
+    {
+      "cat": "git", "title": "Branches",
+      "all": "git branch -a --color",
+      "desc": "Lists local and remote branches; the current one is marked with `*`.",
+      "parts": { "git branch": "Lists / manages branches", "-a": "All branches (local and remote)", "--color": "Colored output" }
+    },
+    {
+      "cat": "git", "title": "New branch",
+      "all": "git switch -c <branch>",
+      "desc": "Creates a new branch and switches to it — work on a new feature without touching the main branch.",
+      "parts": { "git switch": "Switches branches", "-c": "create the branch first", "<branch>": "Branch name without spaces, e.g. `feature-login`" }
+    },
+    {
+      "cat": "git", "title": "Clone a repository",
+      "all": "git clone <url>",
+      "desc": "Downloads a complete copy of a repository (e.g. from GitHub) into a new folder inside the current one.",
+      "parts": { "git clone": "Copies a whole repository", "<url>": "Repository address, e.g. `https://github.com/user/repo.git`" }
+    },
+    {
+      "cat": "git", "title": "Stash changes",
+      "all": "git stash",
+      "desc": "Temporarily shelves your uncommitted changes so the folder is clean (e.g. before pulling or switching branches). Bring them back with `git stash pop`.",
+      "parts": { "git stash": "Shelves uncommitted changes" }
+    },
+    {
+      "cat": "git", "title": "New repository",
+      "all": "git init",
+      "desc": "Turns the current folder into a git repository so you can start tracking its changes.",
+      "parts": { "git init": "Creates a repository here" }
+    },
+
+    {
+      "cat": "tools", "title": "File checksum",
+      "mac": "shasum -a 256 \"<file>\"",
+      "win": "Get-FileHash \"<file>\" -Algorithm SHA256",
+      "desc": "Calculates a file's digital fingerprint. If it matches the checksum published by the download site, the file is complete and hasn't been tampered with.",
+      "parts": { "shasum": "Calculates checksums", "-a 256": "Use SHA-256", "Get-FileHash": "Calculates a file's hash", "-Algorithm SHA256": "Use SHA-256", "<file>": "The file to check" }
+    },
+    {
+      "cat": "tools", "title": "Generate a password",
+      "mac": "openssl rand -base64 18",
+      "win": "$b = New-Object byte[] 18; (New-Object Security.Cryptography.RNGCryptoServiceProvider).GetBytes($b); [Convert]::ToBase64String($b)",
+      "desc": "Creates a random 24-character password using the system's cryptographically secure generator — good for important accounts or API keys. You get a new one every time.",
+      "parts": { "openssl rand": "Produces secure random bytes", "-base64": "Show them as letters and digits", "18": "18 random bytes = 24 characters", "RNGCryptoServiceProvider": "Windows' secure random generator", "[Convert]::ToBase64String": "Turns the bytes into letters and digits" }
+    },
+    {
+      "cat": "tools", "title": "Copy current path",
+      "mac": "pwd | pbcopy",
+      "win": "(Get-Location).Path | Set-Clipboard",
+      "desc": "Copies the full path of the current folder to the clipboard, so you can paste it anywhere.",
+      "parts": { "pwd": "The current folder", "| pbcopy": "Send the output to the macOS clipboard", "(Get-Location).Path": "The current folder", "| Set-Clipboard": "Send the output to the clipboard" }
+    },
+    {
+      "cat": "tools", "title": "Show clipboard",
+      "mac": "pbpaste",
+      "win": "Get-Clipboard",
+      "desc": "Prints the text that is currently on the clipboard.",
+      "parts": { "pbpaste": "Prints the macOS clipboard", "Get-Clipboard": "Reads the clipboard" }
+    },
+    {
+      "cat": "tools", "title": "Share folder on Wi-Fi",
+      "mac": "python3 -m http.server 8000",
+      "win": "python -m http.server 8000",
+      "desc": "Starts a simple web server on port 8000 (needs Python 3 on this computer). On a phone or another computer on the same Wi-Fi, open `http://<your-local-IP>:8000` to browse and download the files in this folder (get the IP from “Local IP address”). ⚠ Anyone on the same network can see these files — press ■ Stop when you're done.",
+      "parts": { "python3": "Runs Python", "python": "Runs Python", "-m http.server": "Python's built-in web server", "8000": "The port number" }
+    },
+    {
+      "cat": "tools", "title": "Keep computer awake",
+      "mac": "echo \"Keeping the computer awake... press Stop to end.\"; caffeinate -d",
+      "win": "Add-Type -Name Power -Namespace Win32 -MemberDefinition '[DllImport(\"kernel32.dll\")] public static extern uint SetThreadExecutionState(uint flags);'; [Win32.Power]::SetThreadExecutionState(2147483651) | Out-Null; 'Keeping the computer awake... press Stop to end.'; while ($true) { Start-Sleep -Seconds 60 }",
+      "desc": "While this runs, the computer and the display won't go to sleep — useful during long downloads, renders or presentations. Press ■ Stop to end it.",
+      "parts": { "caffeinate": "Prevents macOS from sleeping", "-d": "Keep the display on too", "SetThreadExecutionState": "Tells Windows “the system is busy, stay awake”", "2147483651": "Flags: keep the system awake + keep the display on", "while ($true)": "Wait forever, until you press Stop" }
+    },
+    {
+      "cat": "tools", "title": "Speak text",
+      "mac": "say \"<text=Hello! I am your computer.>\"",
+      "win": "Add-Type -AssemblyName System.Speech; (New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak(\"<text=Hello! I am your computer.>\")",
+      "desc": "Reads a sentence aloud with the system voice.",
+      "parts": { "say": "macOS text-to-speech", "System.Speech": "Windows' speech library", "Speak": "Read the text aloud", "<text>": "What to say" }
+    },
+    {
+      "cat": "tools", "title": "Weather",
+      "mac": "curl -s \"wttr.in/?0\"",
+      "win": "curl.exe -s \"wttr.in/?0\"",
+      "desc": "Shows the current weather for your location (detected from your IP) from wttr.in, with a small ASCII-art picture. For another city, put its name after the slash, e.g. `wttr.in/Paris?0`.",
+      "parts": { "curl": "Makes internet requests", "curl.exe": "curl on Windows", "-s": "silent — no progress bar", "wttr.in/": "A text-based weather service", "?0": "Only the current weather (no forecast)" }
+    },
+    {
+      "cat": "tools", "title": "Dev tool versions",
+      "mac": "python3 --version; node --version; git --version",
+      "win": "python --version; node --version; git --version",
+      "desc": "Shows the installed versions of Python, Node.js and Git. If one of them isn't installed you'll see a “not found” message for it.",
+      "parts": { "python3": "Python", "python": "Python", "--version": "Print the version", ";": "Then run the next command", "node": "Node.js", "git": "Git" }
+    }
+  ]
+}
